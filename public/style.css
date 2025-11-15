@@ -37,7 +37,7 @@ body {
   flex-direction: column;
 }
 
-/* Главный контент должен занимать все доступное пространство */
+
 #main-content {
   flex: 1;
 }
@@ -45,13 +45,13 @@ body {
     background: #f5f8fb;
     padding: 36px 30px;
     border-top: 1px solid var(--border);
-    overflow: hidden; /* Скрываем все что выходит за границы */
 }
 
 .events-container {
-    position: relative;
-    overflow: hidden;
-    padding-bottom: 16px;
+    display: flex;
+    gap: 24px;
+    overflow: hidden; 
+    width: 100%;
 }
 
 .events-wrapper {

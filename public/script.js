@@ -383,8 +383,8 @@ const app = {
         });
     },
 
-    // Мероприятия
-    // Мероприятия
+
+// Мероприятия
 fillEvents(eventsData) {
     const evWrap = this.qs('#events-container');
     if (!evWrap) return;
@@ -419,6 +419,20 @@ fillEvents(eventsData) {
     
     evWrap.appendChild(eventsWrapper);
     this.startEventsAutoScroll(eventsWrapper, eventsData.length);
+},
+
+startEventsAutoScroll(wrapper, eventsCount) {
+    let currentIndex = 0;
+    const eventWidth = 350 + 24; // ширина события + gap
+
+    function scrollToNext() {
+        currentIndex = (currentIndex + 1) % eventsCount;
+        const translateX = -currentIndex * eventWidth;
+        wrapper.style.transform = `translateX(${translateX}px)`;
+    }
+    
+    // Запускаем автоматическую прокрутку каждые 4 секунды
+    setInterval(scrollToNext, 4000);
 },
 
 startEventsAutoScroll(wrapper, eventsCount) {
