@@ -14,8 +14,8 @@ const app = {
         try {
             const resp = await fetch('/api/me');
             if (resp.ok) {
-                const user = await resp.json();
-                this.currentUser = user;
+                const data = await resp.json();
+                this.currentUser = data.user;
                 this.loadNotifications();
             } else {
                 this.currentUser = null;
@@ -220,14 +220,16 @@ const app = {
                         return;
                     }
 
+                    // Сохраняем пользователя сразу после регистрации
+                    this.currentUser = data.user;
+                    this.updateUserInterface();
+                    this.createWelcomeNotification();
+
                     document.getElementById('register-success').style.display = 'block';
 
                     setTimeout(() => {
                         this.closeModalById('register-modal');
-                        this.checkAuth().then(() => {
-                            this.createWelcomeNotification();
-                            this.showMessage('Успешная регистрация!', 'success');
-                        });
+                        this.showMessage('Успешная регистрация!', 'success');
                     }, 1200);
                 } catch (err) {
                     this.showMessage('Ошибка сети', 'error');
@@ -256,8 +258,12 @@ const app = {
                         return;
                     }
 
+                    // Сохраняем пользователя после входа
+                    this.currentUser = data.user;
+                    this.updateUserInterface();
+                    this.loadNotifications();
+
                     this.closeModalById('login-modal');
-                    this.checkAuth();
                     this.showMessage('Успешный вход!', 'success');
                 } catch (err) {
                     this.showMessage('Ошибка сети', 'error');
@@ -604,7 +610,7 @@ const app = {
                     this.openModalById('profile-modal');
                     const uName = this.qs('#profile-username');
                     const uEmail = this.qs('#profile-email');
-                    const uRole = this.qs('#profile-role');
+                    const uRole = this.qs('#profile-role span');
                     if (uName) uName.textContent = this.currentUser.username || '';
                     if (uEmail) uEmail.textContent = this.currentUser.email || '';
                     if (uRole) uRole.textContent = this.currentUser.role || 'Пользователь';
