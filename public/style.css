@@ -41,7 +41,35 @@ body {
 #main-content {
   flex: 1;
 }
+.events-section {
+    background: #f5f8fb;
+    padding: 36px 30px;
+    border-top: 1px solid var(--border);
+    overflow: hidden; /* Скрываем все что выходит за границы */
+}
 
+.events-container {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 16px;
+}
+
+.events-wrapper {
+    display: flex;
+    gap: 24px;
+    transition: transform 0.5s ease-in-out;
+}
+
+.event {
+    min-width: 350px;
+    min-height: 200px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 24px;
+    box-shadow: 0 6px 20px rgba(20,70,157,0.03);
+    flex-shrink: 0;
+}
 .consultations-page,
 .contacts-page {
   flex: 1;

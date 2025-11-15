@@ -384,26 +384,92 @@ const app = {
     },
 
     // Мероприятия
-    fillEvents(eventsData) {
-        const evWrap = this.qs('#events-container');
-        if (!evWrap) return;
+    // Мероприятия
+fillEvents(eventsData) {
+    const evWrap = this.qs('#events-container');
+    if (!evWrap) return;
+    
+    // Очищаем контейнер
+    evWrap.innerHTML = '';
+    
+    // Создаем обертку для анимации
+    const eventsWrapper = document.createElement('div');
+    eventsWrapper.className = 'events-wrapper';
+    eventsWrapper.style.display = 'flex';
+    eventsWrapper.style.gap = '24px';
+    eventsWrapper.style.transition = 'transform 0.5s ease-in-out';
+    
+    // Создаем события
+    eventsData.forEach(e => {
+        const d = document.createElement('div');
+        d.className = 'event';
+        d.style.minWidth = '350px';
+        d.style.flexShrink = '0';
+        d.innerHTML = `
+            <div class="event-date">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1046 21 21 20.1046 21 19V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                ${e.date}, ${e.time}
+            </div>
+            <div class="event-place">${e.place}</div>
+            <div class="event-desc">${e.desc}</div>`;
+        eventsWrapper.appendChild(d);
+    });
+    
+    evWrap.appendChild(eventsWrapper);
+    this.startEventsAutoScroll(eventsWrapper, eventsData.length);
+},
+
+startEventsAutoScroll(wrapper, eventsCount) {
+    let currentIndex = 0;
+    const eventWidth = 350 + 24; // ширина события + gap
+    
+    function scrollToNext() {
+        currentIndex = (currentIndex + 1) % eventsCount;
+        const translateX = -currentIndex * eventWidth;
+        wrapper.style.transform = `translateX(${translateX}px)`;
+    }
+    
+    // Запускаем автоматическую прокрутку каждые 4 секунды
+    setInterval(scrollToNext, 4000);
+},
+
+generateCurrentEvents() {
+    const now = new Date();
+    const events = [];
+    
+    for (let i = 1; i <= 8; i++) { // Увеличил до 8 событий для плавной прокрутки
+        const eventDate = new Date(now);
+        eventDate.setDate(now.getDate() + i);
         
-        evWrap.innerHTML = '';
-        eventsData.forEach(e => {
-            const d = document.createElement('div');
-            d.className = 'event';
-            d.innerHTML = `
-                <div class="event-date">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1046 21 21 20.1046 21 19V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    ${e.date}, ${e.time}
-                </div>
-                <div class="event-place">${e.place}</div>
-                <div class="event-desc">${e.desc}</div>`;
-            evWrap.appendChild(d);
+        const days = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+        const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+        
+        const dateStr = `${eventDate.getDate()} ${months[eventDate.getMonth()]}`;
+        const timeOptions = ['10:00', '12:00', '14:00', '16:00', '18:00', '09:30', '11:00', '15:30'];
+        const places = ['Ауд. 302', 'Актовый зал', 'Онлайн', 'Лаб. 204', 'Ауд. 415', 'Конф. зал', 'Библиотека', 'Ауд. 201'];
+        const descriptions = [
+            'Мастер-класс по Python и анализу данных',
+            'День открытых дверей кафедры',
+            'Вебинар по кибербезопасности',
+            'Практикум по нейросетям и машинному обучению',
+            'Семинар по разработке мобильных приложений',
+            'Встреча с выпускниками',
+            'Круглый стол по IT-трендам',
+            'Тренинг по публичным выступлениям'
+        ];
+        
+        events.push({
+            date: dateStr,
+            time: timeOptions[i-1],
+            place: places[i-1],
+            desc: descriptions[i-1]
         });
-    },
+    }
+    
+    return events;
+},
 
     generateCurrentEvents() {
         const now = new Date();
