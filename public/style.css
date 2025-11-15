@@ -45,13 +45,15 @@ body {
     background: #f5f8fb;
     padding: 36px 30px;
     border-top: 1px solid var(--border);
+    overflow: hidden; /* Добавляем здесь */
 }
 
 .events-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 24px;
-    overflow: visible; /* Убираем скролл */
+    overflow: hidden; /* Убираем скролл */
+    width: 100%;
 }
 
 .event {
@@ -61,6 +63,8 @@ body {
     padding: 24px;
     box-shadow: 0 6px 20px rgba(20,70,157,0.03);
     min-height: 200px;
+    width: 100%;
+    box-sizing: border-box; 
 }
 .consultations-page,
 .contacts-page {

@@ -389,22 +389,15 @@ fillEvents(eventsData) {
     const evWrap = this.qs('#events-container');
     if (!evWrap) return;
     
-    // Очищаем контейнер
     evWrap.innerHTML = '';
     
-    // Создаем обертку для анимации
-    const eventsWrapper = document.createElement('div');
-    eventsWrapper.className = 'events-wrapper';
-    eventsWrapper.style.display = 'flex';
-    eventsWrapper.style.gap = '24px';
-    eventsWrapper.style.transition = 'transform 0.5s ease-in-out';
+    // Показываем только столько событий, сколько помещается без скролла
+    // Обычно 3-4 события в зависимости от ширины экрана
+    const eventsToShow = eventsData.slice(0, 4);
     
-    // Создаем события
-    eventsData.forEach(e => {
+    eventsToShow.forEach(e => {
         const d = document.createElement('div');
         d.className = 'event';
-        d.style.minWidth = '350px';
-        d.style.flexShrink = '0';
         d.innerHTML = `
             <div class="event-date">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -414,11 +407,40 @@ fillEvents(eventsData) {
             </div>
             <div class="event-place">${e.place}</div>
             <div class="event-desc">${e.desc}</div>`;
-        eventsWrapper.appendChild(d);
+        evWrap.appendChild(d);
     });
+},
+
+generateCurrentEvents() {
+    const now = new Date();
+    const events = [];
     
-    evWrap.appendChild(eventsWrapper);
-    this.startEventsAutoScroll(eventsWrapper, eventsData.length);
+    // Генерируем только 4 события
+    for (let i = 1; i <= 4; i++) {
+        const eventDate = new Date(now);
+        eventDate.setDate(now.getDate() + i);
+        
+        const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+        
+        const dateStr = `${eventDate.getDate()} ${months[eventDate.getMonth()]}`;
+        const timeOptions = ['10:00', '12:00', '14:00', '16:00'];
+        const places = ['Ауд. 302', 'Актовый зал', 'Онлайн', 'Лаб. 204'];
+        const descriptions = [
+            'Мастер-класс по Python и анализу данных',
+            'День открытых дверей кафедры',
+            'Вебинар по кибербезопасности',
+            'Практикум по нейросетям и машинному обучению'
+        ];
+        
+        events.push({
+            date: dateStr,
+            time: timeOptions[i-1],
+            place: places[i-1],
+            desc: descriptions[i-1]
+        });
+    }
+    
+    return events;
 },
 
 startEventsAutoScroll(wrapper, eventsCount) {
